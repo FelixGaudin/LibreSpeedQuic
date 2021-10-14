@@ -89,7 +89,7 @@ If you reload nginx, you should see the web page. But there will be an error. Yo
 
 ```bash
 cp speedtest/speedtest.js nginx-1.16.1/html/
-cp speedtest/speedtest-worker.js nginx-1.16.1/html/
+cp speedtest/speedtest_worker.js nginx-1.16.1/html/
 ```
 
 Than the speedtest still will be not working. It's because by default the webpage makes call on backend with PHP files. So we will use a PHP-free version of it (https://github.com/librespeed/speedtest/wiki/No-backend).
