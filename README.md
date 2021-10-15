@@ -115,6 +115,42 @@ s.setParameter("url_ping", "backend/empty.dat");
 s.setParameter("test_order", "P_D_U");
 ```
 
+## Modify the Nginx config
+
+In order to enable HTTP/3 in `Nginx` you have to modify the config file. It's located in `nginx-1.16.1/conf/nginx.conf`. You can use this preset for example :
+```conf
+events {
+    worker_connections  1024;
+}
+
+http {
+    include mime.types;
+    client_max_body_size 1000m;    # https://easyengine.io/tutorials/php/increase-file-upload-size-limit/
+    server {
+        # Enable QUIC and HTTP/3.
+        listen 443 quic reuseport;
+
+        # Enable HTTP/2 (optional).
+        listen 443 ssl http2;
+
+        ssl_certificate      localhost.crt;
+        ssl_certificate_key  localhost.key;
+
+        # Enable all TLS versions (TLSv1.3 is required for QUIC).
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+
+        # Add Alt-Svc header to negotiate HTTP/3.
+        add_header alt-svc 'h3=":443"; ma=86400';
+    }
+}
+```
+This config file is highly inspired by the one proposed by [CloudFlare](https://github.com/cloudflare/quiche/tree/master/extras/nginx#running). As you see it's needed to have a ssl certificate. For your local test you can make your own with [Let's Encrypt](https://letsencrypt.org/fr/docs/certificates-for-localhost/)
+```bash
+openssl req -x509 -out localhost.crt -keyout localhost.key \
+  -newkey rsa:2048 -nodes -sha256 \
+  -subj '/CN=localhost' -extensions EXT -config <( \
+   printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+```
 
 Finaly, if you restart your server, the speedtest should work !
 
