@@ -10,7 +10,7 @@ var multer = require('multer');
 var upload = multer();
 
 var db = require('./database.js');
-const { throws } = require('assert');
+const SECRET = require('./secret.js');
 
 const PORT = 8888
 
@@ -144,12 +144,32 @@ Server.post('/telemetry', function (req, res) {
 })
 
 Server.get("/getdb", function (req, res) {
-    db.all("SELECT * FROM telemetry", function(err, rows) {  
-        if (err) throw err
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify({data : rows}))
-    });
+
+    if (SECRET.LOGIN == req.query.login && SECRET.PASSWORD == req.query.password) {
+        console.log('acces');
+        db.all("SELECT * FROM telemetry", function(err, rows) {  
+            if (err) throw err
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({data : rows}))
+        });
+    } else {
+        console.log("WRONG");
+        res.status(403).send({
+            message : 'Bad credentials'
+        })
+    }
 })
+
+// Only for localhost usage
+Server.get("/database.sqlite", function (req, res) {
+    let options = {
+        root : path.join(__dirname)
+    }
+    res.sendFile('telemetry.sqlite', options, (err) => {
+        if (err) throw err;
+    })
+})
+
 
 Server.use(express.static(path.join(__dirname, 'public')));
 

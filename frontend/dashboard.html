@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico">
+    <title>Dashboard</title>
+</head>
+<body>
+    <div class="content">
+        <img src="LibreSpeedQuiche.png" alt="LibreSpeedQuiche">
+        <div class="items">
+            <div class="item">
+                <span class="item-title">Avg dl</span>
+                <div class="item-value">
+                    <span id="dl">69</span>
+                </div>
+            </div>
+            <div class="item">
+                <span class="item-title">Avg ul</span>
+                <div class="item-value">
+                    <span id="ul">69</span>
+                </div>
+            </div>
+            <div class="item">
+                <span class="item-title">Avg ping</span>
+                <div class="item-value">
+                    <span id="ping">69</span>
+                </div>
+            </div>
+            <div class="item">
+                <span class="item-title">Avg jitter</span>
+                <div class="item-value">
+                    <span id="jitter">69</span>
+                </div>
+            </div>
+        </div>
+        <div class="items">
+            <div class="chart-container">
+                <canvas id="httpversion"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="country"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="as"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="callsCount"></canvas>
+            </div>
+        </div>
+
+        <div>
+            <a href="#">
+                <input class="button" type="button" value="Reload" onclick="reload()">
+            </a>
+        </div>
+
+    </div>
+
+    <div class="connection">
+        <div class="container">
+            <img src="LibreSpeedQuiche.png" alt="LibreSpeedQuiche">
+            <span class="title">Acces to dashboard</span>
+            <div class="form">
+                <span>Username</span>
+                <input id="login" type="text">
+                <span>Password</span>
+                <input id="password" type="password">
+                <div>
+                    <a href="#">
+                        <input class="button" type="button" value="Acces" onclick="acces()">
+                    </a>
+                </div>
+            </div>
+            <span id="error"></span>
+        </div>
+    </div>
+    
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script>
+// https://stackoverflow.com/questions/8064691/how-do-i-pass-along-variables-with-xmlhttprequest
+function formatParams( params ){
+    return "?" + Object
+        .keys(params)
+        .map(function(key){
+          return key+"="+encodeURIComponent(params[key])
+        })
+        .join("&")
+}
+
+function avg(list) {
+    let sum = 0
+    list.forEach((v) => sum += parseInt(v))
+    return sum/list.length
+}
+
+function round(n) {
+    return Math.round(n * 100)/100
+}
+
+function displayStats(data) {
+
+    document.getElementsByClassName("content")[0].style.display = "block"
+    document.getElementsByClassName("connection")[0].style.display = "none"
+
+    let dlAvg = round(avg(data.map((e) => {return e.dl})))
+    document.getElementById("dl").innerText = dlAvg
+    let ulAvg = round(avg(data.map((e) => {return e.ul})))
+    document.getElementById("ul").innerText = ulAvg
+    let pingAvg = round(avg(data.map((e) => {return e.ping})))
+    document.getElementById("ping").innerText = pingAvg
+    let jitterAvg = round(avg(data.map((e) => {return e.jitter})))
+    document.getElementById("jitter").innerText = jitterAvg
+
+
+    const COLORS = [
+        '#fcb82d',
+        '#f58220',
+        '#85cba8',
+        '#be1e2d',
+        '#f15a29'
+    ]
+
+
+    // Pie chart for http version
+    httpVersions = {}
+    data.map((e) => {return e.httpversion}).forEach(version => {
+        if (httpVersions[version] == undefined) httpVersions[version] = 0
+        httpVersions[version]++
+    });
+    const httpVerionPieChart = new Chart(
+        document.getElementById("httpversion"),
+        {
+            type : 'pie',
+            data : {
+                labels: Object.keys(httpVersions),
+                datasets: [{
+                    label: 'Version HTTP',
+                    data: Object.keys(httpVersions).map((key) => {return httpVersions[key]}),
+                    backgroundColor: COLORS,
+                    hoverOffset: 4
+                }]
+            }
+        }
+    )
+
+    // Pie chart for country
+    countries = {}
+    data.map((e) => {return e.country}).forEach(country => {
+        if (countries[country] == undefined) countries[country] = 0
+        countries[country]++
+    });
+    const countriesPieChart = new Chart(
+        document.getElementById("country"),
+        {
+            type : 'pie',
+            data : {
+                labels: Object.keys(countries),
+                datasets: [{
+                    label: 'Version HTTP',
+                    data: Object.keys(countries).map((key) => {return countries[key]}),
+                    backgroundColor: COLORS,
+                    hoverOffset: 4
+                }]
+            }
+        }
+    )
+
+    // Pie chart for AS
+    ass = {}
+    data.map((e) => {return e.ass.split(" ")[0]}).forEach(ass_ => {
+        if (ass[ass_] == undefined) ass[ass_] = 0
+        ass[ass_]++
+    });
+    const asPieChart = new Chart(
+        document.getElementById("as"),
+        {
+            type : 'pie',
+            data : {
+                labels: Object.keys(ass),
+                datasets: [{
+                    label: 'Version HTTP',
+                    data: Object.keys(ass).map((key) => {return ass[key]}),
+                    backgroundColor: COLORS,
+                    hoverOffset: 4
+                }]
+            }
+        }
+    )
+
+    // Line chart for speedtest call
+    callsTimestamps = data.map((e) => {return e.timestamp})
+    let i = 0
+    callsCount = callsTimestamps.map(() => {return ++i})
+    const callsCountLineChart = new Chart(
+        document.getElementById("callsCount"),
+        {
+            type : 'line',
+            data : {
+                labels : callsTimestamps,
+                datasets : [
+                    {
+                        label : "Calls count",
+                        data : callsCount,
+                        fill : false,
+                        borderColor : '#fcb82d'
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'month'
+                        }
+                    }
+                },
+                maintainAspectRatio: false,
+            }
+        }
+    )
+}
+
+function reload() {
+    // login and password won't be changed ¯\_(ツ)_/¯
+    acces()
+}
+
+function acces() {
+
+    xhr = new XMLHttpRequest();
+    
+    xhr.onreadystatechange = function (event) {
+        if (xhr.readyState === 4) {
+            switch (xhr.status) {
+                case 200:
+                    let data = JSON.parse(xhr.responseText).data
+                    displayStats(data)
+                    break;
+                case 403:
+                    document.getElementById("error").innerText = 'Error : ' + JSON.parse(xhr.responseText).message
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    // get login and password
+    let params = {
+        login : document.getElementById("login").value,
+        password : document.getElementById("password").value
+    }
+
+	xhr.open("GET", "getdb" + formatParams(params))
+	xhr.send()
+}
+</script>
+
+<style>
+	body{
+		text-align:center;
+		font-family:"Roboto",sans-serif;
+	}
+	img {
+		width: 30em;
+	}
+    .content {
+        margin: auto;
+        width: 50vw;
+        display: none;
+    }
+    .items {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .item {
+        background-color: #ffdb6f;
+        width: 150px;
+        height: 80px;
+        margin: 10px;
+        padding: 5px;
+        border-radius: 10px;
+        border: solid;
+        border-color: #f58220;
+    }
+    .item-title {
+        color: #f58220;
+        font-size: 1.5em;
+    }
+    .item-value {
+        color: #f58220;
+        /* margin: 5px; */
+    }
+    .item-value span {
+        font-size: 2.5em;
+    }
+    .item-value i {
+        font-size: 2.5em;
+        /* margin-top: 10px; */
+    }
+    .chart-container {
+        position: relative; 
+        height:300px; 
+        width:300px;
+        margin : 20px
+    }
+    .button {
+        margin: 20px;
+        width: 100px;
+        color: #f58220;
+        background-color: #ffdb6f;
+        border: solid;
+        border-color: #f58220;
+        border-radius: 5px;
+        padding: 5px;
+        font-size: 20px;
+        cursor: pointer
+    }
+    .connection {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+    .connection .container {
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .connection .title {
+        font-size: 1.5em;
+        margin-top: 50px;
+    }
+    .connection .form {
+        margin: 10px;
+        display: flex;
+        flex-direction: column;
+    }
+    .connection span {
+        margin: 5px;
+    }
+    #error {
+        color: red;
+    }
+</style>
+
+</html>
