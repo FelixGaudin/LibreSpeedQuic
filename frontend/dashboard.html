@@ -49,6 +49,9 @@
             <div class="chart-container">
                 <canvas id="callsCount"></canvas>
             </div>
+            <div class="chart-container">
+                <canvas id="browser"></canvas>
+            </div>
         </div>
 
         <div>
@@ -103,6 +106,14 @@ function round(n) {
     return Math.round(n * 100)/100
 }
 
+var charts = {
+    httpVerionPieChart : undefined,
+    countriesPieChart : undefined,
+    asPieChart : undefined,
+    callsCountLineChart : undefined,
+    browserPieChart : undefined
+}
+
 function displayStats(data) {
 
     document.getElementsByClassName("content")[0].style.display = "block"
@@ -133,7 +144,7 @@ function displayStats(data) {
         if (httpVersions[version] == undefined) httpVersions[version] = 0
         httpVersions[version]++
     });
-    const httpVerionPieChart = new Chart(
+    charts.httpVerionPieChart = new Chart(
         document.getElementById("httpversion"),
         {
             type : 'pie',
@@ -155,7 +166,7 @@ function displayStats(data) {
         if (countries[country] == undefined) countries[country] = 0
         countries[country]++
     });
-    const countriesPieChart = new Chart(
+    charts.countriesPieChart = new Chart(
         document.getElementById("country"),
         {
             type : 'pie',
@@ -177,7 +188,7 @@ function displayStats(data) {
         if (ass[ass_] == undefined) ass[ass_] = 0
         ass[ass_]++
     });
-    const asPieChart = new Chart(
+    charts.asPieChart = new Chart(
         document.getElementById("as"),
         {
             type : 'pie',
@@ -197,7 +208,7 @@ function displayStats(data) {
     callsTimestamps = data.map((e) => {return e.timestamp})
     let i = 0
     callsCount = callsTimestamps.map(() => {return ++i})
-    const callsCountLineChart = new Chart(
+    charts.callsCountLineChart = new Chart(
         document.getElementById("callsCount"),
         {
             type : 'line',
@@ -225,9 +236,34 @@ function displayStats(data) {
             }
         }
     )
+
+    // Pie chart for browser info
+    browsers = {}
+    data.map((e) => {return e.browser}).forEach(browser => {
+        if (browser == null) browser = "Unknown" // allow old data to be diplay
+        if (browsers[browser] == undefined) browsers[browser] = 0
+        browsers[browser]++
+    });
+    charts.browserPieChart = new Chart(
+        document.getElementById("browser"),
+        {
+            type : 'pie',
+            data : {
+                labels: Object.keys(browsers),
+                datasets: [{
+                    label: 'Version HTTP',
+                    data: Object.keys(browsers).map((key) => {return browsers[key]}),
+                    backgroundColor: COLORS,
+                    hoverOffset: 4
+                }]
+            }
+        }
+    )
 }
 
 function reload() {
+    // remove charts
+    Object.keys(charts).forEach((key) => {charts[key].destroy()})
     // login and password won't be changed ¯\_(ツ)_/¯
     acces()
 }

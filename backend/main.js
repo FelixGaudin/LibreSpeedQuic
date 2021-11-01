@@ -108,6 +108,7 @@ Server.post('/telemetry', function (req, res) {
     toLog.ping        = requestBody.ping;
     toLog.jitter      = requestBody.jitter;
     toLog.httpversion = requestBody.httpversion;
+    toLog.browser     = requestBody.browser;
 
     try {
         let data = JSON.parse(requestBody.ispinfo).rawIspInfo
@@ -125,7 +126,7 @@ Server.post('/telemetry', function (req, res) {
 
     // console.log(toLog);
     // log in the db
-    var insert = 'INSERT INTO telemetry (timestamp, dl, ul, ping, jitter, ip, ass, country, distance, httpversion) VALUES (?,?,?,?,?,?,?,?,?,?)'
+    var insert = 'INSERT INTO telemetry (timestamp, dl, ul, ping, jitter, ip, ass, country, distance, httpversion, browser) VALUES (?,?,?,?,?,?,?,?,?,?,?)'
     db.run(insert, [
         Date.now(),
         toLog.dl, 
@@ -136,7 +137,8 @@ Server.post('/telemetry', function (req, res) {
         toLog.as, 
         toLog.country, 
         toLog.distance,
-        toLog.httpversion
+        toLog.httpversion,
+        toLog.browser
     ])
 
 

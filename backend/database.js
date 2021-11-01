@@ -22,7 +22,8 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             ass         text,
             country     text,
             distance    text,
-            httpversion text
+            httpversion text,
+            browser     text
             )`,
         (err) => {
             console.log("Hello");
