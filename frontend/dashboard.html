@@ -59,6 +59,10 @@
                 <input class="button" type="button" value="Reload" onclick="reload()">
             </a>
         </div>
+        <div>
+            <span>Auto update : </span>
+            <input type="checkbox" name="Auto update" id="autoUpdate">
+        </div>
 
     </div>
 
@@ -297,6 +301,13 @@ function acces() {
 	xhr.open("GET", "getdb" + formatParams(params))
 	xhr.send()
 }
+
+window.setInterval(() => {
+    if (document.getElementById("autoUpdate").checked) {
+        reload()
+    }
+}, 30*1000) // refresh every 30 seconds
+
 </script>
 
 <style>
