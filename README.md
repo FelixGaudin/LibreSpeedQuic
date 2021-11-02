@@ -145,6 +145,13 @@ http {
 }
 ```
 This config file is highly inspired by the one proposed by [CloudFlare](https://github.com/cloudflare/quiche/tree/master/extras/nginx#running). As you see it's needed to have a ssl certificate. For your local test you can make your own with [Let's Encrypt](https://letsencrypt.org/fr/docs/certificates-for-localhost/)
+
+## Case of 403 : Forbiden erreur 
+
+This may mean that your html files are in a folder with to strict permissions. First try this https://linuxhint.com/fix-nginx-403-forbidden/. It may not work, so just put the html files in a *normal* file (eg : /home/) and then use this https://stackoverflow.com/questions/10631933/nginx-static-file-serving-confusion-with-root-alias
+
+
+
 ```bash
 openssl req -x509 -out localhost.crt -keyout localhost.key \
   -newkey rsa:2048 -nodes -sha256 \
