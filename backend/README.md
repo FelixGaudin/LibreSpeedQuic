@@ -34,7 +34,7 @@ Just run `node main.js`. (You may have to install all the dependencies)
 We dockerized the backend. You may run it using these commands :
 
 ```bash
-docker build -t <img name>
+docker build . -t <img name>
 docker run -p 8888:8888 -d <img name>
 ```
 
