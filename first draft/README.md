@@ -311,7 +311,7 @@ We already started to collect data while doing our tests on different hosts (see
 
 ## Thanks
 
-- Nicolas Bueul for helping us to make a SSL certificate on the personnal computer (allowing us to perform tests with several people).
+- Nicolas Beuel for helping us to make a SSL certificate on the personnal computer (allowing us to perform tests with several people).
 
 - Guillaume Vandenneucker for lending his OVH server to test from a *real* server.
 
