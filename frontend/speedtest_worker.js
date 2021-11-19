@@ -797,7 +797,9 @@ function sendTelemetry(done) {
 		fd.append("log", settings.telemetry_level > 1 ? log : "");
 		fd.append("extra", settings.telemetry_extra);
 		fd.append("httpversion", httpversion);
-		fd.append("browser", getBrowserInfo())
+		fd.append("browser", getBrowserInfo());
+		fd.append("uln", settings.xhr_ulMultistream);
+		fd.append("dln", settings.xhr_dlMultistream);
 		xhr.send(fd);
 	} catch (ex) {
 		var postData = "extra=" + encodeURIComponent(settings.telemetry_extra) + "&ispinfo=" + encodeURIComponent(JSON.stringify(telemetryIspInfo)) + "&dl=" + encodeURIComponent(dlStatus) + "&ul=" + encodeURIComponent(ulStatus) + "&ping=" + encodeURIComponent(pingStatus) + "&jitter=" + encodeURIComponent(jitterStatus) + "&log=" + encodeURIComponent(settings.telemetry_level > 1 ? log : "");
