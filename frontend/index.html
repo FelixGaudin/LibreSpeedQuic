@@ -18,6 +18,20 @@ s.setParameter("url_ping", "empty");
 s.setParameter("test_order", "I_P_D_U");
 
 
+let tmp = new XMLHttpRequest();
+tmp.onload = function() {
+	httpversion = tmp.responseText
+	console.log(httpversion)
+	if (httpversion!='HTTP/3') { // no http3
+		I('http2warning').style.display='';
+	}
+}
+tmp.open("GET", "httpversion")
+
+setTimeout(() => {tmp.send()}, 500)
+
+
+
 var meterBk=/Trident.*rv:(\d+\.\d+)/i.test(navigator.userAgent)?"#EAEAEA":"#80808040";
 var dlColor="#f58220",
 	ulColor="#fcb82d";
@@ -251,6 +265,21 @@ function initUI(){
 		height:auto;
 		margin: 0.25em 0;
 	}
+	#http2warning{
+        position:fixed;
+        top:2em;
+        bottom:2em;
+        left:2em;
+        right:2em;
+        overflow-y:auto;
+        width:auto;
+        height:auto;
+        box-shadow:0 0 3em 1em #000000;
+        z-index:999999;
+        text-align:left;
+        background-color:#FFFFFF;
+        padding:1em;
+	}
 	#privacyPolicy{
         position:fixed;
         top:2em;
@@ -385,6 +414,22 @@ function initUI(){
     <br/><br/>
     <div class="closePrivacyPolicy">
         <a class="privacy" href="#" onclick="I('privacyPolicy').style.display='none'">Close</a>
+    </div>
+    <br/>
+</div>
+<div id="http2warning" style="display:none">
+    <h2>The speedtest is about to be done with HTTP2 instead of HTTP3</h2>
+	<h3>You may be able to enable HTTP3 using of these tricks :</h3>
+    <p>	
+		<ol>
+			<li>In case you're using Firefox, restarting it may enable HTTP3. </li>
+			<li>If it doesn't work, type about:config in your browser, set network.http.http3.enabled to true in case it was set to false.</li>
+			<li>Chrome : visit <A HREF = "chrome://flags/#enable-quic">chrome://flags/#enable-quic</A> and set Experimental QUIC protocol to Enabled.</li>
+		  </ol> 
+	</p>
+	<img src="miaou.png" alt="Here's a cat, for support"> 
+    <div class="closeWarning">
+        <a class="privacy" href="#" onclick="I('http2warning').style.display='none'">Close</a>
     </div>
     <br/>
 </div>

@@ -2,3 +2,4 @@ node_modules
 *.sqlite
 
 secret.js
+nginx-1.16.1
