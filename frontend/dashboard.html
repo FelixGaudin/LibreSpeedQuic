@@ -272,6 +272,26 @@ function reload() {
     acces()
 }
 
+const INGI_IP = ['130.104.78.15',
+        '130.104.78.16',
+        '130.104.78.17',
+        '130.104.78.18',
+        '130.104.78.19',
+        '130.104.78.20',
+        '130.104.78.21',
+        '130.104.78.22',
+        '130.104.78.23',
+        '130.104.78.24',
+        '130.104.78.25',
+        '130.104.78.26',
+        '130.104.78.27',
+        '130.104.78.28',
+        '130.104.78.29',
+        '130.104.78.30',
+        '130.104.78.31',
+        '130.104.78.32',
+        '130.104.78.33']
+
 function acces() {
 
     xhr = new XMLHttpRequest();
@@ -281,6 +301,7 @@ function acces() {
             switch (xhr.status) {
                 case 200:
                     let data = JSON.parse(xhr.responseText).data
+                    data = data.filter(row => INGI_IP.indexOf(row.ip) == -1)
                     displayStats(data)
                     break;
                 case 403:
