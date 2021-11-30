@@ -377,3 +377,17 @@ This line adds a header which informs the client of the possibility to switch to
 ### Case of 403 : Forbiden error
 
 This may mean that your html files are in a folder with to strict permissions. First try this https://linuxhint.com/fix-nginx-403-forbidden/. It may not work, so just put the html files in a *normal* file (eg : /home/) and then use this https://stackoverflow.com/questions/10631933/nginx-static-file-serving-confusion-with-root-alias
+
+## Allow HTTP/3 in your browser
+
+### Chrome
+
+Set `chrome://flags/#enable-quic` to enable
+
+### Firefox
+
+In `about:config` set `network.http.http3.enable` to true
+
+### Safari
+
+Develop > Experimental features > HTTP3 (enable it)
