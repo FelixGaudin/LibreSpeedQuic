@@ -1,5 +1,23 @@
-# Librespeed with QUIC
-Inspired by https://github.com/cloudflare/quiche/tree/master/extras/nginx
+# LibreSpeedQuic
+
+> Gaudin Félix & Giot Adrien
+
+## Project structure 
+
+```
+├── backend/         : modified backend of librespeed in node JS
+├── builders/        : bash file to automatically install Nginx with the Quiche patch
+├── first_draft/     : first draft of this project
+├── frontend/        : modified version of librespeed
+└── stats/           : files for the statistics
+```
+
+## Goal of the project
+
+[Librespeed](https://librespeed.org/) provides an open-source speedtest like server that runs above TCP. The
+objective of this project is to deploy this test suite on a QUIC server (e.g. nginx using cloudflare’s quiche) and
+explore the performance of QUIC when doing such speedtests.
+
 ## Installation
 
 ### Nginx with Quiche
