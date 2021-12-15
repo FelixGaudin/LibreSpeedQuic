@@ -67,7 +67,6 @@ var settings = {
 	url_telemetry: "results/telemetry.php", // path to the script that adds telemetry data to the database
 	telemetry_extra: "", //extra data that can be passed to the telemetry through the settings
     forceIE11Workaround: false, //when set to true, it will foce the IE11 upload test on all browsers. Debug only
-	label : "", // custom label to tag the speedtest
 };
 
 var xhr = null; // array of currently active xhr requests
@@ -801,7 +800,6 @@ function sendTelemetry(done) {
 		fd.append("browser", getBrowserInfo());
 		fd.append("uln", settings.xhr_ulMultistream);
 		fd.append("dln", settings.xhr_dlMultistream);
-		fd.append("label", settings.label);
 		xhr.send(fd);
 	} catch (ex) {
 		var postData = "extra=" + encodeURIComponent(settings.telemetry_extra) + "&ispinfo=" + encodeURIComponent(JSON.stringify(telemetryIspInfo)) + "&dl=" + encodeURIComponent(dlStatus) + "&ul=" + encodeURIComponent(ulStatus) + "&ping=" + encodeURIComponent(pingStatus) + "&jitter=" + encodeURIComponent(jitterStatus) + "&log=" + encodeURIComponent(settings.telemetry_level > 1 ? log : "");

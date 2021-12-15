@@ -25,8 +25,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             httpversion text,
             browser     text,
             uln         integer,
-            dln         integer,
-            label       text  DEFAULT ('')
+            dln         integer
             )`,
         (err) => {
             console.log("Hello");
