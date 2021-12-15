@@ -128,7 +128,7 @@ Server.post('/telemetry', function (req, res) {
 
     // console.log(toLog);
     // log in the db
-    var insert = 'INSERT INTO telemetry (timestamp, dl, ul, ping, jitter, ip, ass, country, distance, httpversion, browser, uln, dln, label) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+    var insert = 'INSERT INTO telemetry (timestamp, dl, ul, ping, jitter, ip, ass, country, distance, httpversion, browser, uln, dln) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)'
     db.run(insert, [
         Date.now(),
         toLog.dl, 
