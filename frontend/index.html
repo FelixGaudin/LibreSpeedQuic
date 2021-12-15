@@ -371,6 +371,10 @@ function initUI(){
 			<span>Number of connection for download</span>
 			<input type="number" name="dlNbr" id="dln">
 		</div>
+		<div>
+			<span>Number of connection for download</span>
+			<input type="text" name="label" id="label">
+		</div>
 	</div>
 	<br/>
 	<br/>
@@ -447,5 +451,10 @@ uploadNumberInput.addEventListener('change', (event) => {
 let downloadNumberInput = document.getElementById('dln');
 downloadNumberInput.addEventListener('change', (event) => {
 	s.setParameter("xhr_ulMultistream", parseInt(downloadNumberInput.value))
+})
+
+let labelInput = document.getElementById('label');
+	labelInput.addEventListener('change', (event) => {
+	s.setParameter("label", parseInt(downloadNumberInput.value))
 })
 </script>
